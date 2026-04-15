@@ -1,0 +1,33 @@
+name: CI Two Ships Passing
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Linter (Norme Google)
+        run: npm run lint
+
+      - name: Tests
+        run: npm test
+
+      - name: Audit de sécurité des dépendances
+        run: npm audit
