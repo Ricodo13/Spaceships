@@ -8,7 +8,9 @@
     "build": "vite build",
     "serve": "vite preview",
     "lint": "eslint . --ext .js",
-    "test": "jest"
+    "test": "jest",
+    "cypress:run": "cypress run",
+    "test:e2e": "start-server-and-test dev http-get://127.0.0.1:3000 cypress:run"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,10 @@
   },
   "homepage": "https://github.com/razh/js13k-2021#readme",
   "devDependencies": {
+    "@babel/core": "7.29.0",
+    "@babel/preset-env": "7.29.2",
+    "babel-jest": "30.3.0",
+    "cypress": "15.13.1",
     "del": "6.0.0",
     "escape-string-regexp": "5.0.0",
     "eslint": "7.32.0",
@@ -41,6 +47,7 @@
     "prettier": "2.2.1",
     "roadroller": "2.1.0",
     "rollup": "2.56.3",
+    "start-server-and-test": "3.0.2",
     "through2": "4.0.2",
     "vite": "2.5.6"
   },
