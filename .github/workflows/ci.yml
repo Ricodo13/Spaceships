@@ -25,13 +25,12 @@ jobs:
 
       - name: Linter
         run: npm run lint
-        continue-on-error: true  
 
       - name: Tests Unitaires
         run: |
           npm test
           echo "::notice title=Tests Unitaires::Tous les tests unitaires mathématiques (Jest) sont passés avec succès !"
-          echo "Tests Unitaires" $GITHUB_STEP_SUMMARY
+          echo "Tests Unitaires" >> $GITHUB_STEP_SUMMARY
           echo "Les tests sur \`vec3.js\` et \`math.js\` ont été validés." >> $GITHUB_STEP_SUMMARY
 
       - name: Tests Fonctionnels (Cypress)
@@ -45,4 +44,3 @@ jobs:
         run: |
           npm audit
           echo "::notice title=Sécurité::L'audit des dépendances est terminé."
-        continue-on-error: true
