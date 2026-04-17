@@ -1,7 +1,56 @@
-deploy_pages:
+name: CI Two Ships Passing
+
+on:
+  push:
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Linter
+        run: npm run lint
+
+      - name: Tests Unitaires
+        run: |
+          npm test
+          echo "::notice title=Tests Unitaires::Tous les tests unitaires mathématiques (Jest) sont passés avec succès !"
+          echo "Tests Unitaires" >> $GITHUB_STEP_SUMMARY
+          echo "Les tests sur \`vec3.js\` et \`math.js\` ont été validés." >> $GITHUB_STEP_SUMMARY
+
+      - name: Tests Fonctionnels (Cypress)
+        run: |
+          npm run test:e2e
+          echo "::notice title=Tests Fonctionnels::Les tests e2e Cypress ont validé le chargement du jeu !"
+          echo "### 🎮 Tests Fonctionnels" >> $GITHUB_STEP_SUMMARY
+          echo "Le moteur 3D (Canvas) s'affiche correctement sans erreur critique." >> $GITHUB_STEP_SUMMARY
+
+      - name: Audit de sécurité des dépendances
+        run: |
+          npm audit
+          echo "::notice title=Sécurité::L'audit des dépendances est terminé."
+        continue-on-error: true
+
+  deploy_pages:
     needs: build_and_test
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    
     permissions:
       pages: write
       id-token: write
