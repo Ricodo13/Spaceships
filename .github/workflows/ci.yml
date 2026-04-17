@@ -25,7 +25,7 @@ jobs:
 
       - name: Linter
         run: npm run lint
-        continue-on-error: true
+        continue-on-error: true 
 
       - name: Tests Unitaires
         run: |
@@ -86,3 +86,33 @@ jobs:
       - name: Déploiement sur GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  publish_docker:
+    needs: build_and_test
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      packages: write 
+      
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Rendre le nom du dépôt en minuscules
+        run: echo "REPO=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
+      - name: Connexion à GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build et Push de l'image Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ env.REPO }}:latest
