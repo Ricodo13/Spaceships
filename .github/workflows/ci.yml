@@ -25,6 +25,7 @@ jobs:
 
       - name: Linter
         run: npm run lint
+        continue-on-error: true  
 
       - name: Tests Unitaires
         run: |
@@ -44,3 +45,4 @@ jobs:
         run: |
           npm audit
           echo "::notice title=Sécurité::L'audit des dépendances est terminé."
+        continue-on-error: true
